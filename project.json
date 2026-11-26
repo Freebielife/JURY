@@ -1,0 +1,78 @@
+{
+  "slug": "jury",
+  "name": "Jury Token",
+  "symbol": "JURY",
+  "master": "Ef-_fgHqEczCswLpnBEoIvgyruJUvn_QDt5QRjecY8w3lr2i",
+  "decimals": 9,
+  "github": {
+    "owner": "Freebielife",
+    "repo": "JURY"
+  },
+  "pools": [],
+  "primary_pool": null,
+  "links": {
+    "website": "https://telemarket.org"
+  },
+  "services": {
+    "UQD4uGNdB4a3f52mYOZf0x1nCmdd1DAvrLppL0a1cetTYCQx": "Binance",
+    "EQDPfqI17W9lF-3OmAJu92GOn22BoTMdTmW6cY4s0V-ArRRY": "Bybit"
+  },
+  "logo_file": "web/project-logo.webp",
+  "logo_origin": "user_attachment",
+  "logo_source": "https://chatgpt.com/library?file_id=libfile_b366f2e814848191b95bc0ab3b007a2f&account_id=personal",
+  "flag_file": "web/project-flag.webp",
+  "flag_source": "User attachment libfile_b366f2e814848191b95bc0ab3b007a2f",
+  "project_description": {
+    "text": "JURY is the voting token of the Telemarket oracle DAO. Holders resolve disputed oracle outcomes on Telemarket prediction markets by voting with their tokens. JURY may also be used in future projects.",
+    "origin": "token_metadata",
+    "sources": [
+      "https://tonapi.io/v2/jettons/-1:bf7e01ea11ccc2b302e99c112822f832aee254be7fd00ede5046379c63cc3796",
+      "https://telemarket.org/oracle/dao"
+    ],
+    "checked_at": "2026-11-26"
+  },
+  "coverage": {
+    "pools": "unverified: GeckoTerminal HTTP 404; STON.fi and DeDust HTTP 403",
+    "telegram": "no verified project channel found"
+  },
+  "service_provenance": {
+    "0:f8b8635d0786b77f9da660e65fd31d670a675dd4302facba692f46b571eb5360": {
+      "category": "custody",
+      "source": "User-provided attribution, 2026-11-22; ownership not independently verified"
+    },
+    "0:cf7ea235ed6f6517edce98026ef7618e9f6d81a1331d4e65ba718e2cd15f80ad": {
+      "category": "custody",
+      "source": "User-provided attribution, 2026-11-22; ownership not independently verified"
+    }
+  },
+  "template_repository": "Freebielife/TON-Observatory-Template",
+  "engine_version": "1.3.0",
+  "max_html_bytes": 2500000,
+  "ui": {
+    "holders_initial": 10,
+    "holders_expanded": 20
+  },
+  "methodology": {
+    "valuation": "last observed swap in primary_pool times CURRENT total supply; not circulating market cap",
+    "primary_pool": null,
+    "sellers": "sum of successful supported native TON swap sales; service roles excluded",
+    "holders": "balances excluding known services and identified contracts; unclassified accounts may remain until verified",
+    "burns": "accepted burn notifications and zero-address transfers shown as distinct evidence",
+    "usd": "historical TON/USD rate from CoinGecko",
+    "history": "incremental confirmed swaps; missing intervals remain partial"
+  },
+  "branding": {
+    "hero": {
+      "origin": "user_attachment",
+      "source": "https://chatgpt.com/library?file_id=libfile_b366f2e814848191b95bc0ab3b007a2f&account_id=personal",
+      "file": "web/project-logo.webp"
+    },
+    "sectionFlag": {
+      "source": "User attachment libfile_b366f2e814848191b95bc0ab3b007a2f",
+      "catalogueKey": null,
+      "emoji": null,
+      "file": "web/project-flag.webp"
+    },
+    "channel": null
+  }
+}

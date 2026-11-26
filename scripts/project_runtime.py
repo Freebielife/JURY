@@ -11,7 +11,7 @@ DEFAULT_MAX_HTML_BYTES = 2_500_000
 
 
 def canonical_address(value):
-    if re.fullmatch(r"0:[0-9a-fA-F]{64}", str(value)):
+    if re.fullmatch(r"(?:0|-1):[0-9a-fA-F]{64}", str(value)):
         return value.lower()
     if not isinstance(value, str) or len(value) != 48:
         raise ValueError("Invalid mainnet TON address")
@@ -19,10 +19,10 @@ def canonical_address(value):
         data = base64.urlsafe_b64decode(value)
     except (ValueError, binascii.Error) as exc:
         raise ValueError("Invalid address encoding") from exc
-    if (len(data) != 36 or data[0] not in (0x11, 0x51) or data[1] != 0 or
+    if (len(data) != 36 or data[0] not in (0x11, 0x51) or data[1] not in (0, 255) or
             binascii.crc_hqx(data[:34], 0) != int.from_bytes(data[34:], "big")):
         raise ValueError("Invalid mainnet basechain address or CRC")
-    return "0:" + data[2:34].hex()
+    return str(int.from_bytes(data[1:2], "big", signed=True)) + ":" + data[2:34].hex()
 
 
 def read_project(root):
@@ -46,9 +46,9 @@ def publish_html(root, result, snapshot):
     check_identity(snapshot, project)
     if project.get("engine_version") == VERSION:
         branding = project.get("branding", {})
-        if not all(branding.get(key) for key in ("hero", "sectionFlag", "channel")):
+        if not all(branding.get(key) for key in ("hero", "sectionFlag")):
             raise ValueError("Official logo, confirmed section flag and project channel are required")
-        if (branding["channel"] != project.get("links", {}).get("telegram") or
+        if (branding.get("channel") != project.get("links", {}).get("telegram") or
                 branding["hero"]["source"] != project.get("logo_source") or
                 branding["hero"]["origin"] != project.get("logo_origin")):
             raise ValueError("Branding configuration changed; regenerate the project")

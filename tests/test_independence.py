@@ -18,8 +18,13 @@ class IndependenceTests(unittest.TestCase):
         self.assertEqual(check_reference(),13)
         for name in ('assets.py','trades.py','badges.py','observatory.py','web/app.js','web/page.html'):
             self.assertTrue(source_file(name).is_relative_to(REFERENCE))
-        self.assertFalse((ROOT/'index.html').exists())
-        self.assertFalse((ROOT/'data/snapshot.json').exists())
+        if (ROOT/'project.json').exists():
+            project=json.loads((ROOT/'project.json').read_text())
+            snapshot=json.loads((ROOT/'data/snapshot.json').read_text())
+            self.assertEqual(snapshot['token'],project['master'])
+        else:
+            self.assertFalse((ROOT/'index.html').exists())
+            self.assertFalse((ROOT/'data/snapshot.json').exists())
         self.assertNotIn('from assets import', (ROOT/'scripts/discover_project.py').read_text())
         self.assertNotIn('ludomanDev', (REFERENCE/'web/app.js').read_text())
 

@@ -26,6 +26,9 @@ REFERENCE = ROOT / "reference"
 
 
 def source_file(relative):
+    original = ROOT / "factory-support" / relative
+    if original.is_file():
+        return original
     frozen = REFERENCE / relative
     return frozen if frozen.is_file() else ROOT / relative
 
