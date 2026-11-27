@@ -31,3 +31,11 @@ class JuryIdentityTests(unittest.TestCase):
         cfg=json.loads((ROOT/'project.json').read_text())
         self.assertEqual((ROOT/'web/project-logo.webp').read_bytes(),(ROOT/'web/project-flag.webp').read_bytes())
         self.assertNotIn('telegram',cfg['links'])
+
+    def test_layout_keeps_extra_notices_and_empty_supply_out_of_view(self):
+        page=(ROOT/'web/page.html').read_text()
+        self.assertNotIn('coverageNotice',page)
+        self.assertIn('class="panel resources supplyPanel" hidden',page)
+        self.assertIn('href="#supply" data-t="navSupply" hidden',page)
+        self.assertIn('href="https://telemarket.org/oracle/dao"',page)
+        self.assertIn('href="https://dyor.io/token/Ef-_fgHqEczCswLpnBEoIvgyruJUvn_QDt5QRjecY8w3lr2i"',page)

@@ -38,7 +38,8 @@ const texts = {
     "badgeDigits": "Четырёхзначный .ton-домен в кошельке или подтверждённая привязка в TON DNS.",
     "badgeSub": "",
     "blueCollection":"","activated":"Активация","burnBadge":"Сожжено от 1 000 токенов","toZero":"На нулевой адрес","operationDetails":"Подробности операции","supplyTitle":"❄️ Заморозка и 🔒 стейкинг","supplyFrozen":"❄️ Заморожено","supplyFrozenHint":"","supplyStaked":"🔒 Стейкинг","supplyStakedHint":"","supplyUsdHint":"Оценка по последней доступной сделке и TON/USD",
-    "intro": "Сделки, держатели и сжигания $JURY в сети TON.",
+    "intro": "Обсерватория $JURY — токена голосования Telemarket Oracle DAO в сети TON.",
+    "poolUnavailable": "Подтверждённые торговые пулы ещё не подключены.",
     "swap": "Обмен на STON.fi",
     "price": "📈 Капитализация JURY",
     "summary": "📊 JURY за 24 часа",
@@ -66,7 +67,7 @@ const texts = {
     "delayed": "Обновление задерживается",
     "chart": "Оценка капитализации",
     "burnCount": "Сжигания",
-    "projectDirectory": "Сайт Jury Token",
+    "projectDirectory": "Сайт проекта",
     "navMarket": "📈 Рынок",
     "links": "🔗 Полезные ссылки",
     "exploreContract": "Контракт",
@@ -148,7 +149,8 @@ const texts = {
     "badgeDigits": "A four-digit .ton domain owned by the wallet or verified as linked in TON DNS.",
     "badgeSub": "",
     "blueCollection":"","activated":"Activated","burnBadge":"Burned at least 1,000 tokens","toZero":"Transfer to zero address","operationDetails":"Transaction details","supplyTitle":"❄️ Frozen and 🔒 staking","supplyFrozen":"❄️ Frozen","supplyFrozenHint":"","supplyStaked":"🔒 Staking","supplyStakedHint":"","supplyUsdHint":"Estimate from latest available trade and TON/USD",
-    "intro": "Trades, holders and $JURY burns on TON.",
+    "intro": "$JURY Observatory — Telemarket Oracle DAO voting token on TON.",
+    "poolUnavailable": "Verified trading pools have not been connected yet.",
     "swap": "Swap on STON.fi",
     "price": "📈 JURY market cap",
     "summary": "📊 JURY in 24 hours",
@@ -176,7 +178,7 @@ const texts = {
     "delayed": "Update overdue",
     "chart": "Estimated market cap",
     "burnCount": "Burns",
-    "projectDirectory": "Jury Token website",
+    "projectDirectory": "Project website",
     "navMarket": "📈 Market",
     "links": "🔗 Useful links",
     "exploreContract": "Contract",
@@ -1047,10 +1049,17 @@ function renderPools(){
     grid.append(card);
   }
   grid.hidden=!grid.childElementCount;
+  const hasPools=grid.childElementCount>0||document.querySelector("#pools .knownPools .poolCard")!==null;
+  document.querySelector("#pools .poolIntro").hidden=hasPools;
+  $("poolChecked").hidden=!$("poolChecked").textContent;
 }
 function renderSupply(){
   const frozen=snapshot.vesting?.reserved;
   const principal=snapshot.staking?.principal;
+  const available=frozen!=null||principal!=null;
+  $("supply").hidden=!available;
+  document.querySelector('#nav a[href="#supply"]').hidden=!available;
+  if(!available)return;
   const estimate=marketCapSeries(snapshot,30*day,60,"USD");
   const supply=Number(snapshot.holders?.totalSupply);
   const latest=estimate.latest;
@@ -1098,7 +1107,7 @@ function renderSyncStatus(){
  const required=['trades','holders'];const times=required.map(k=>snapshot[k]?.asOf).filter(n=>Number.isFinite(n)&&n>0);const missingSections=required.some(k=>!snapshot[k]?.asOf);
  const asOf=times.length?Math.min(...times):0, minutes=asOf?Math.max(0,Math.floor((now-asOf)/60)):0;
  let age=minutes<1?(ru?'только что':'just now'):minutes<60?(ru?`${minutes} мин. назад`:`${minutes} min ago`):(ru?`${Math.floor(minutes/60)} ч ${minutes%60} мин. назад`:`${Math.floor(minutes/60)}h ${minutes%60}m ago`);
- const fresh=asOf?(ru?'Данные обновлены '+age:'Data updated '+age):(ru?'Нет полного снимка данных':'Complete snapshot unavailable');
+ const fresh=asOf?(missingSections?(ru?'Доступные данные обновлены '+age:'Available data updated '+age):(ru?'Данные обновлены '+age:'Data updated '+age)):(ru?'Нет полного снимка данных':'Complete snapshot unavailable');
  const loading=syncState.phase==='loading', failed=syncState.phase==='error';
  $('syncStatus').textContent=loading?(ru?'Проверяем обновления…':'Checking for updates…'):failed?(ru?'Не удалось загрузить свежие данные':'Could not load fresh data'):fresh;
  const warning=!asOf || missingSections || minutes>=60 || (snapshot.errors||[]).length>0;
@@ -1143,6 +1152,7 @@ function activeSection(){
  let target=jumps[0];
  for(const jump of jumps){
    const section=document.querySelector(jump.hash);
+   if(jump.hidden||section.hidden)continue;
    if(section.offsetTop>y)continue;
    if(!narrow&&jump.hash==="#wallets"&&hash!=="#wallets")continue;
    target=jump;
